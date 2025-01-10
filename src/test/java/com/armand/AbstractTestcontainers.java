@@ -1,5 +1,6 @@
 package com.armand;
 
+import com.github.javafaker.Faker;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,16 +22,18 @@ public abstract class AbstractTestcontainers {
           .withUsername("armand")
           .withPassword("password");
 
-  public static final String PASSWORD = postgreSQLContainer.getPassword();
-  public static final String USERNAME = postgreSQLContainer.getUsername();
-  public static final String JDBC_URL = postgreSQLContainer.getJdbcUrl();
-
   //  @Autowired
   //  private ApplicationContext applicationContext;
 
   @BeforeAll
   static void beforeAll() {
-    Flyway flyway = Flyway.configure().dataSource(JDBC_URL, USERNAME, PASSWORD).load();
+    Flyway flyway =
+        Flyway.configure()
+            .dataSource(
+                postgreSQLContainer.getJdbcUrl(),
+                postgreSQLContainer.getUsername(),
+                postgreSQLContainer.getPassword())
+            .load();
     flyway.migrate();
     //    System.out.println(applicationContext.getBeanDefinitionCount());
     //    for (String name : applicationContext.getBeanDefinitionNames()) {
@@ -48,13 +51,15 @@ public abstract class AbstractTestcontainers {
   private static DataSource getDataSource() {
     return DataSourceBuilder.create()
         .driverClassName(postgreSQLContainer.getDriverClassName())
-        .url(JDBC_URL)
-        .username(USERNAME)
-        .password(PASSWORD)
+        .url(postgreSQLContainer.getJdbcUrl())
+        .username(postgreSQLContainer.getUsername())
+        .password(postgreSQLContainer.getPassword())
         .build();
   }
 
   protected static JdbcTemplate getJdbcTemplate() {
     return new JdbcTemplate(getDataSource());
   }
+
+  protected static final Faker FAKER = new Faker();
 }
