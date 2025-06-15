@@ -1,2 +1,2 @@
-ALTER Table customer
-ADD CONSTRAINT customer_email_unique UNIQUE (email);
+alter table customer
+add CONSTRAINT customer_email_unique UNIQUE (email);

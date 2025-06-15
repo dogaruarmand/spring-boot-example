@@ -1,7 +1,6 @@
 package com.armand.customer;
 
-public record CustomerRegistrationRequest (
+public record CustomerRegistrationRequest(
         String name,
         String email,
-        Integer age
-){}
+        Integer age) {}

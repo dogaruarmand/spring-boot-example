@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CustomerDao {
-  List<Customer> selectAllCustomers();
+    List<Customer> selectAllCustomers();
 
-  Optional<Customer> selectCustomerById(Integer id);
+    Optional<Customer> selectCustomerById(Integer id);
 
-  void insertCustomer(Customer customer);
+    void insertCustomer(Customer customer);
 
-  boolean existsCustomerWithEmail(String email);
+    boolean existsCustomerByEmail(String email);
 
-  boolean existsCustomerWithId(Integer id);
+    boolean existsCustomerById(Integer id);
 
-  void deleteCustomerById(Integer customerId);
+    void deleteCustomerById(Integer customerId);
 
-  void updateCustomer(Customer update);
+    void updateCustomer(Customer update);
 }
