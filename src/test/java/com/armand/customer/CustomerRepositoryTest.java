@@ -1,7 +1,7 @@
 package com.armand.customer;
 
 import com.armand.AbstractTestContainers;
-import org.junit.jupiter.api.BeforeEach;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -17,28 +17,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 class CustomerRepositoryTest extends AbstractTestContainers {
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private CustomerRepository underTest;
 
-//    @Autowired
-//    private ApplicationContext applicationContext;
-
-    private CustomerJPADataAccesService underTest;
-
-    @BeforeEach
-    void setUp() {
-        underTest = new CustomerJPADataAccesService(customerRepository);
-//        System.out.println(applicationContext.getBeanDefinitionCount());
+    private record Result(String email, Customer customer) {
     }
 
     @Test
     void existsCustomerByEmail() {
         // Given
-        String email = FAKER.internet().safeEmailAddress() + "-" + UUID.randomUUID();
-        Customer customer = new Customer(FAKER.name().fullName(), email, 20);
-        customerRepository.save(customer);
+        Result result = getCustomer();
 
         // When
-        boolean actual = underTest.existsCustomerByEmail(email);
+        boolean actual = underTest.existsCustomerByEmail(result.email());
 
         // Then
         assertThat(actual).isTrue();
@@ -47,19 +37,17 @@ class CustomerRepositoryTest extends AbstractTestContainers {
     @Test
     void existsCustomerById() {
         // Given
-        String email = FAKER.internet().safeEmailAddress() + "-" + UUID.randomUUID();
-        Customer customer = new Customer(FAKER.name().fullName(), email, 20);
-        customerRepository.save(customer);
+        Result result = getCustomer();
 
         Integer id =
-                customerRepository.findAll().stream()
-                        .filter(c -> c.getEmail().equals(email))
+                underTest.findAll().stream()
+                        .filter(c -> c.getEmail().equals(result.email()))
                         .map(Customer::getId)
                         .findFirst()
                         .orElseThrow();
 
         // When
-        Optional<Customer> actual = underTest.selectCustomerById(id);
+        Optional<Customer> actual = underTest.findById(id);
 
         // Then
         assertThat(actual)
@@ -67,9 +55,9 @@ class CustomerRepositoryTest extends AbstractTestContainers {
                 .hasValueSatisfying(
                         c -> {
                             assertThat(c.getId()).isEqualTo(id);
-                            assertThat(c.getName()).isEqualTo(customer.getName());
-                            assertThat(c.getEmail()).isEqualTo(customer.getEmail());
-                            assertThat(c.getAge()).isEqualTo(customer.getAge());
+                            assertThat(c.getName()).isEqualTo(result.customer().getName());
+                            assertThat(c.getEmail()).isEqualTo(result.customer().getEmail());
+                            assertThat(c.getAge()).isEqualTo(result.customer().getAge());
                         });
     }
 
@@ -83,5 +71,12 @@ class CustomerRepositoryTest extends AbstractTestContainers {
 
         // Then
         assertThat(actual).isFalse();
+    }
+
+    private @NotNull Result getCustomer() {
+        String email = FAKER.internet().safeEmailAddress() + "-" + UUID.randomUUID();
+        Customer customer = new Customer(FAKER.name().fullName(), email, 20);
+        underTest.save(customer);
+        return new Result(email, customer);
     }
 }

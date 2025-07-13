@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository("jpa")
-public class CustomerJPADataAccesService implements CustomerDao {
-
-    public CustomerJPADataAccesService(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
-    }
+public class CustomerJPADataAccessService implements CustomerDao {
 
     private final CustomerRepository customerRepository;
+
+    public CustomerJPADataAccessService(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
 
     @Override
     public List<Customer> selectAllCustomers() {
