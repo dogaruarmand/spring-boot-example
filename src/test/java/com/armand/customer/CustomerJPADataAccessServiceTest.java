@@ -60,9 +60,9 @@ class CustomerJPADataAccessServiceTest {
 
 
     @Test
-    void existsCustomerByEmail() {
+    void existsCustomerWithEmail() {
         String email = "test@email.com";
-        underTest.existsCustomerByEmail(email);
+        underTest.existsCustomerWithEmail(email);
         verify(customerRepository).existsCustomerByEmail(email);
     }
 

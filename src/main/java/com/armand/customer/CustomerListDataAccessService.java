@@ -38,7 +38,7 @@ public class CustomerListDataAccessService implements CustomerDao {
     }
 
     @Override
-    public boolean existsCustomerByEmail(String email) {
+    public boolean existsCustomerWithEmail(String email) {
         return customers.stream().anyMatch(c -> c.getEmail().equals(email));
     }
 

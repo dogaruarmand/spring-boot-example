@@ -10,7 +10,7 @@ public interface CustomerDao {
 
     void insertCustomer(Customer customer);
 
-    boolean existsCustomerByEmail(String email);
+    boolean existsCustomerWithEmail(String email);
 
     boolean existsCustomerById(Integer id);
 
